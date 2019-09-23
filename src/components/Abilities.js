@@ -7,7 +7,7 @@ const Abilities = ({ player }) => {
       <ul>
         {player.abilities.map(ability => (
           <li key={ability.name}>
-            <button>{ability.name}</button>
+            <button>{`${ability.icon} ${ability.name}`}</button>
           </li>
         ))}
       </ul>

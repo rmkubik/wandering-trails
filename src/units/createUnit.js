@@ -1,18 +1,14 @@
+import createAbility from "../abilities/createAbility";
+
 export default function createUnit({
   row,
   col,
   maxLength = 4,
   speed = 1,
   abilities = [
-    {
-      name: "Slice"
-    },
-    {
-      name: "Hack"
-    },
-    {
-      name: "Charge"
-    }
+    createAbility({ name: "Slice" }),
+    createAbility({ name: "Hack" }),
+    createAbility({ name: "Charge" })
   ]
 }) {
   return {
