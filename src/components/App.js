@@ -12,73 +12,57 @@ import "./App.css";
 
 const keyboard = new Keyboard();
 
-const updatePlayer = ({ player, direction }) => {
-  const playerHead = getHead(player);
-  const newLocation = {
-    col: playerHead.col + direction.col,
-    row: playerHead.row + direction.row
-  };
-
-  return moveUnit(player, newLocation);
-};
-
 const App = ({ startTiles, width, height }) => {
   const [tiles, setTiles] = useState(startTiles);
   const [player, setPlayer] = useRefState(createUnit({ row: 0, col: 0 }));
   const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
 
+  const updatePlayer = ({ direction }) => {
+    const playerHead = getHead(player.current);
+    const newLocation = {
+      col: playerHead.col + direction.col,
+      row: playerHead.row + direction.row
+    };
+
+    const newPlayer = moveUnit(player.current, newLocation);
+    setPlayer(newPlayer);
+
+    update({ setEnemies, enemies: enemies.current, location });
+  };
+
   useEffect(() => {
     keyboard.addListener("w", () => {
-      const newPlayer = updatePlayer({
-        player: player.current,
+      updatePlayer({
         direction: {
           row: -1,
           col: 0
         }
       });
-
-      setPlayer(newPlayer);
     });
     keyboard.addListener("a", () => {
-      const newPlayer = updatePlayer({
-        player: player.current,
+      updatePlayer({
         direction: {
           row: 0,
           col: -1
         }
       });
-
-      setPlayer(newPlayer);
     });
     keyboard.addListener("s", () => {
-      const newPlayer = updatePlayer({
-        player: player.current,
+      updatePlayer({
         direction: {
           row: 1,
           col: 0
         }
       });
-
-      setPlayer(newPlayer);
     });
     keyboard.addListener("d", () => {
-      const newPlayer = updatePlayer({
-        player: player.current,
+      updatePlayer({
         direction: {
           row: 0,
           col: 1
         }
       });
-
-      setPlayer(newPlayer);
     });
-
-    // document.addEventListener("keydown", event => {
-    //   if (keyDownFunctionMap[event.key]) {
-    //     const location = keyDownFunctionMap[event.key](event);
-    //     update({ setEnemies, enemies: enemies.current, location });
-    //   }
-    // });
   }, []);
 
   return (
