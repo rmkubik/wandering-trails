@@ -7,7 +7,20 @@ import Map from "./Map";
 import Stats from "./Stats";
 import Abilities from "./Abilities";
 import update from "../lifecycle/update";
+import { Keyboard } from "../lifecycle/input";
 import "./App.css";
+
+const keyboard = new Keyboard();
+
+const updatePlayer = ({ player, direction }) => {
+  const playerHead = getHead(player);
+  const newLocation = {
+    col: playerHead.col + direction.col,
+    row: playerHead.row + direction.row
+  };
+
+  return moveUnit(player, newLocation);
+};
 
 const App = ({ startTiles, width, height }) => {
   const [tiles, setTiles] = useState(startTiles);
@@ -15,59 +28,57 @@ const App = ({ startTiles, width, height }) => {
   const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
 
   useEffect(() => {
-    const keyDownFunctionMap = {
-      w: () => {
-        const playerHead = getHead(player.current);
-        const newLocation = {
-          col: playerHead.col,
-          row: playerHead.row - 1
-        };
-        const newPlayer = moveUnit(player.current, newLocation);
-        setPlayer(newPlayer);
+    keyboard.addListener("w", () => {
+      const newPlayer = updatePlayer({
+        player: player.current,
+        direction: {
+          row: -1,
+          col: 0
+        }
+      });
 
-        return newLocation;
-      },
-      a: () => {
-        const playerHead = getHead(player.current);
-        const newLocation = {
-          col: playerHead.col - 1,
-          row: playerHead.row
-        };
-        const newPlayer = moveUnit(player.current, newLocation);
-        setPlayer(newPlayer);
-
-        return newLocation;
-      },
-      s: () => {
-        const playerHead = getHead(player.current);
-        const newLocation = {
-          col: playerHead.col,
-          row: playerHead.row + 1
-        };
-        const newPlayer = moveUnit(player.current, newLocation);
-        setPlayer(newPlayer);
-
-        return newLocation;
-      },
-      d: () => {
-        const playerHead = getHead(player.current);
-        const newLocation = {
-          col: playerHead.col + 1,
-          row: playerHead.row
-        };
-        const newPlayer = moveUnit(player.current, newLocation);
-        setPlayer(newPlayer);
-
-        return newLocation;
-      }
-    };
-
-    document.addEventListener("keydown", event => {
-      if (keyDownFunctionMap[event.key]) {
-        const location = keyDownFunctionMap[event.key](event);
-        update({ setEnemies, enemies: enemies.current, location });
-      }
+      setPlayer(newPlayer);
     });
+    keyboard.addListener("a", () => {
+      const newPlayer = updatePlayer({
+        player: player.current,
+        direction: {
+          row: 0,
+          col: -1
+        }
+      });
+
+      setPlayer(newPlayer);
+    });
+    keyboard.addListener("s", () => {
+      const newPlayer = updatePlayer({
+        player: player.current,
+        direction: {
+          row: 1,
+          col: 0
+        }
+      });
+
+      setPlayer(newPlayer);
+    });
+    keyboard.addListener("d", () => {
+      const newPlayer = updatePlayer({
+        player: player.current,
+        direction: {
+          row: 0,
+          col: 1
+        }
+      });
+
+      setPlayer(newPlayer);
+    });
+
+    // document.addEventListener("keydown", event => {
+    //   if (keyDownFunctionMap[event.key]) {
+    //     const location = keyDownFunctionMap[event.key](event);
+    //     update({ setEnemies, enemies: enemies.current, location });
+    //   }
+    // });
   }, []);
 
   return (
