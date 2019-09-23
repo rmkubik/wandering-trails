@@ -9,12 +9,23 @@ import Abilities from "./Abilities";
 import update from "../lifecycle/update";
 import { Keyboard } from "../lifecycle/input";
 import "./App.css";
+import createAbility from "../abilities/createAbility";
 
 const keyboard = new Keyboard();
 
 const App = ({ startTiles, width, height }) => {
   const [tiles, setTiles] = useState(startTiles);
-  const [player, setPlayer] = useRefState(createUnit({ row: 0, col: 0 }));
+  const [player, setPlayer] = useRefState(
+    createUnit({
+      row: 0,
+      col: 0,
+      abilities: [
+        createAbility({ name: "Slice 1" }),
+        createAbility({ name: "Slice 2", range: 2 }),
+        createAbility({ name: "Slice 3", range: 3 })
+      ]
+    })
+  );
   const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
