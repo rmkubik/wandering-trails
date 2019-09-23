@@ -70,8 +70,6 @@ const App = ({ startTiles, width, height }) => {
     });
   }, []);
 
-  console.log("app", { ...player.current });
-
   return (
     <div>
       <h1>Wandering Trails</h1>
