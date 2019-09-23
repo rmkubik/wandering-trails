@@ -1,6 +1,6 @@
 import React from "react";
 
-const Abilities = ({ player }) => {
+const Abilities = ({ player, selectedAbility, setSelectedAbility }) => {
   return (
     <div>
       <h2>Abilities</h2>

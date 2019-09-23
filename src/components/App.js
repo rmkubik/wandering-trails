@@ -16,6 +16,7 @@ const App = ({ startTiles, width, height }) => {
   const [tiles, setTiles] = useState(startTiles);
   const [player, setPlayer] = useRefState(createUnit({ row: 0, col: 0 }));
   const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
+  const [selectedAbility, setSelectedAbility] = useRefState({});
 
   const updatePlayer = ({ direction }) => {
     const playerHead = getHead(player.current);
@@ -75,9 +76,13 @@ const App = ({ startTiles, width, height }) => {
           enemies={enemies.current}
           width={width}
           height={height}
+          selectedAbility={selectedAbility.current}
         />
         <Stats player={player.current} />
-        <Abilities player={player.current} />
+        <Abilities
+          player={player.current}
+          setSelectedAbility={setSelectedAbility}
+        />
       </main>
     </div>
   );
