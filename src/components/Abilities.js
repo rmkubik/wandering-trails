@@ -7,7 +7,17 @@ const Abilities = ({ player, selectedAbility, setSelectedAbility }) => {
       <ul>
         {player.abilities.map(ability => (
           <li key={ability.name}>
-            <button>{`${ability.icon} ${ability.name}`}</button>
+            <button
+              style={
+                selectedAbility.name === ability.name
+                  ? {
+                      backgroundColor: "navy",
+                      color: "white"
+                    }
+                  : {}
+              }
+              onClick={() => setSelectedAbility(ability)}
+            >{`${ability.icon} ${ability.name}`}</button>
           </li>
         ))}
       </ul>

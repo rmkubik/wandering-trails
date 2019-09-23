@@ -81,6 +81,7 @@ const App = ({ startTiles, width, height }) => {
         <Stats player={player.current} />
         <Abilities
           player={player.current}
+          selectedAbility={selectedAbility.current}
           setSelectedAbility={setSelectedAbility}
         />
       </main>
