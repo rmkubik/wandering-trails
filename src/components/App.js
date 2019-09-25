@@ -11,6 +11,7 @@ import { Keyboard, Mouse } from "../lifecycle/input";
 import "./App.css";
 import createAbility from "../abilities/createAbility";
 import config from "../utils/config";
+import getLocationFromXY from "../location/getLocationFromXY";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
@@ -77,8 +78,8 @@ const App = ({ startTiles }) => {
         }
       });
     });
-    mouse.addListener(mouse.LEFT_BUTTON, () => {
-      console.log("hi");
+    mouse.addListener(mouse.LEFT_BUTTON, event => {
+      console.log(getLocationFromXY(event));
     });
   }, []);
 
