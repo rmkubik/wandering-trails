@@ -7,13 +7,15 @@ import Map from "./Map";
 import Stats from "./Stats";
 import Abilities from "./Abilities";
 import update from "../lifecycle/update";
-import { Keyboard } from "../lifecycle/input";
+import { Keyboard, Mouse } from "../lifecycle/input";
 import "./App.css";
 import createAbility from "../abilities/createAbility";
+import config from "../utils/config";
 
 const keyboard = new Keyboard();
+const mouse = new Mouse();
 
-const App = ({ startTiles, width, height }) => {
+const App = ({ startTiles }) => {
   const [tiles, setTiles] = useState(startTiles);
   const [player, setPlayer] = useRefState(
     createUnit({
@@ -75,6 +77,9 @@ const App = ({ startTiles, width, height }) => {
         }
       });
     });
+    mouse.addListener(mouse.LEFT_BUTTON, () => {
+      console.log("hi");
+    });
   }, []);
 
   return (
@@ -85,8 +90,8 @@ const App = ({ startTiles, width, height }) => {
           tiles={tiles}
           player={player.current}
           enemies={enemies.current}
-          width={width}
-          height={height}
+          width={config.width}
+          height={config.height}
           selectedAbility={selectedAbility.current}
         />
         <Stats player={player.current} />

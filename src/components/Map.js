@@ -6,6 +6,7 @@ import getInRangeLocations from "../abilities/getInRangeLocations";
 import "./Map.css";
 import getHead from "../units/getHead";
 import areLocationsEqual from "../location/areLocationsEqual";
+import config from "../utils/config";
 
 const Map = ({ tiles, player, enemies, width, height, selectedAbility }) => {
   const inRangeTiles =
@@ -19,8 +20,8 @@ const Map = ({ tiles, player, enemies, width, height, selectedAbility }) => {
     <div
       className="map"
       style={{
-        gridTemplateColumns: "32px ".repeat(width),
-        gridTemplateRows: "32px ".repeat(height)
+        gridTemplateColumns: `${config.tileWidth}px `.repeat(width),
+        gridTemplateRows: `${config.tileHeight}px `.repeat(height)
       }}
     >
       {tiles.map((row, rowIndex) =>
