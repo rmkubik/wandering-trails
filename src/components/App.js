@@ -12,6 +12,8 @@ import "./App.css";
 import createAbility from "../abilities/createAbility";
 import config from "../utils/config";
 import getLocationFromXY from "../location/getLocationFromXY";
+import getInRangeLocations from "../abilities/getInRangeLocations";
+import areLocationsEqual from "../location/areLocationsEqual";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
@@ -79,7 +81,21 @@ const App = ({ startTiles }) => {
       });
     });
     mouse.addListener(mouse.LEFT_BUTTON, event => {
-      console.log(getLocationFromXY(event));
+      const inRangeTiles =
+        selectedAbility.current.name &&
+        getInRangeLocations({
+          origin: getHead(player.current),
+          ability: selectedAbility.current
+        });
+
+      if (
+        selectedAbility.current.name &&
+        inRangeTiles.find(inRangeLocation =>
+          areLocationsEqual(inRangeLocation, getLocationFromXY(event))
+        )
+      ) {
+        console.log("attack", getLocationFromXY(event));
+      }
     });
   }, []);
 
