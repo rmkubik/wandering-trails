@@ -16,7 +16,13 @@ const Abilities = ({ player, selectedAbility, setSelectedAbility }) => {
                     }
                   : {}
               }
-              onClick={() => setSelectedAbility(ability)}
+              onClick={() => {
+                if (selectedAbility.name === ability.name) {
+                  setSelectedAbility({});
+                } else {
+                  setSelectedAbility(ability);
+                }
+              }}
             >{`${ability.icon} ${ability.name}`}</button>
           </li>
         ))}
