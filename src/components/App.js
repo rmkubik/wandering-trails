@@ -14,6 +14,7 @@ import config from "../utils/config";
 import getLocationFromXY from "../location/getLocationFromXY";
 import getInRangeLocations from "../abilities/getInRangeLocations";
 import areLocationsEqual from "../location/areLocationsEqual";
+import isMoveValid from "../units/isMoveValid";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
@@ -41,10 +42,22 @@ const App = ({ startTiles }) => {
       row: playerHead.row + direction.row
     };
 
+    if (
+      !isMoveValid(player.current, newLocation, player.current, enemies.current)
+    ) {
+      // If move is invalid, do not move player and do not update the game state
+      return;
+    }
+
     const newPlayer = moveUnit(player.current, newLocation);
     setPlayer(newPlayer);
 
-    update({ setEnemies, enemies: enemies.current, location });
+    update({
+      setEnemies,
+      location,
+      enemies: enemies.current,
+      player: player.current
+    });
   };
 
   useEffect(() => {
