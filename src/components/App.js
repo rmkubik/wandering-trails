@@ -43,7 +43,13 @@ const App = ({ startTiles }) => {
     };
 
     if (
-      !isMoveValid(player.current, newLocation, player.current, enemies.current)
+      !isMoveValid(
+        player.current,
+        newLocation,
+        player.current,
+        enemies.current,
+        tiles
+      )
     ) {
       // If move is invalid, do not move player and do not update the game state
       return;
@@ -56,7 +62,8 @@ const App = ({ startTiles }) => {
       setEnemies,
       location,
       enemies: enemies.current,
-      player: player.current
+      player: player.current,
+      tiles: tiles
     });
   };
 

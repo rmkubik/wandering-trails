@@ -7,6 +7,19 @@ function isLocationBlocked(location, player, enemies) {
   );
 }
 
-export default function isMoveValid(unit, location, player, enemies) {
-  return !isLocationBlocked(location, player, enemies);
+function isLocationInMap(tiles, location) {
+  return Boolean(
+    tiles.find((row, rowIndex) =>
+      row.find(
+        (_, colIndex) => location.row === rowIndex && location.col === colIndex
+      )
+    )
+  );
+}
+
+export default function isMoveValid(unit, location, player, enemies, tiles) {
+  return (
+    isLocationInMap(tiles, location) &&
+    !isLocationBlocked(location, player, enemies)
+  );
 }

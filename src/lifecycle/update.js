@@ -2,7 +2,13 @@ import moveUnit from "../units/moveUnit";
 import { randInt } from "../utils/random";
 import isMoveValid from "../units/isMoveValid";
 
-export default function update({ setEnemies, player, enemies, location }) {
+export default function update({
+  setEnemies,
+  player,
+  enemies,
+  location,
+  tiles
+}) {
   const newEnemies = enemies.map(enemy => {
     const direction = randInt(0, 3);
 
@@ -29,7 +35,7 @@ export default function update({ setEnemies, player, enemies, location }) {
         break;
     }
 
-    if (isMoveValid(enemy, newLocation, player, enemies)) {
+    if (isMoveValid(enemy, newLocation, player, enemies, tiles)) {
       // Only move the unit if its a valid location,
       // for now this means the unit will randomly throw away
       // its moves
