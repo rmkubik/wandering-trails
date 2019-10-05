@@ -14,7 +14,8 @@ export default function createUnit({
     border: "gray",
     background: "lightgray"
   },
-  icon = "?"
+  icon = "?",
+  owner = 0
 }) {
   return {
     tiles: [
@@ -27,6 +28,7 @@ export default function createUnit({
     speed,
     abilities,
     color: { border, background },
-    icon
+    icon,
+    owner
   };
 }

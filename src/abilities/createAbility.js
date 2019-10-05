@@ -4,7 +4,9 @@ export default function createAbility({
   range = 1,
   rangePattern = "cross",
   targetPattern = "square",
-  targetRadius = 1
+  targetRadius = 1,
+  effect = "dealDamage",
+  value = 1
 }) {
   return {
     icon,
@@ -12,6 +14,8 @@ export default function createAbility({
     range,
     rangePattern,
     targetPattern,
-    targetRadius
+    targetRadius,
+    effect,
+    value
   };
 }

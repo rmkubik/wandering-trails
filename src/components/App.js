@@ -16,28 +16,15 @@ import getInRangeLocations from "../abilities/getInRangeLocations";
 import areLocationsEqual from "../location/areLocationsEqual";
 import isMoveValid from "../units/isMoveValid";
 import isLocationInUnit from "../units/isLocationInUnit";
+import defaultEntities from "../entities/default";
+import getPlayer from "../entities/getPlayer";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
 
 const App = ({ startTiles }) => {
   const [tiles, setTiles] = useState(startTiles);
-  const [player, setPlayer] = useRefState(
-    createUnit({
-      row: 0,
-      col: 0,
-      abilities: [
-        createAbility({ name: "Slice 1" }),
-        createAbility({ name: "Slice 2", range: 2 }),
-        createAbility({ name: "Slice 3", range: 3 })
-      ],
-      color: {
-        background: "cyan",
-        border: "darkturquoise"
-      },
-      icon: "🔪"
-    })
-  );
+  const [entities, setEntities] = useRefState(defaultEntities);
   const [enemies, setEnemies] = useRefState([
     createUnit({
       row: 5,
@@ -61,33 +48,28 @@ const App = ({ startTiles }) => {
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
   const updatePlayer = ({ direction, ability, location }) => {
-    const playerHead = getHead(player.current);
+    const [player] = getPlayer(entities.current);
+    const playerHead = getHead(player);
     const newLocation = {
       col: playerHead.col + direction.col,
       row: playerHead.row + direction.row
     };
 
-    if (
-      !isMoveValid(
-        player.current,
-        newLocation,
-        player.current,
-        enemies.current,
-        tiles
-      )
-    ) {
+    if (!isMoveValid(player, newLocation, player, enemies.current, tiles)) {
       // If move is invalid, do not move player and do not update the game state
       return;
     }
 
-    const newPlayer = moveUnit(player.current, newLocation);
-    setPlayer(newPlayer);
+    const newPlayer = moveUnit(player, newLocation);
+    // setPlayer(newPlayer);
+    // hack to set first entity only, which is the player
+    setEntities([newPlayer, ...entities.current.slice(1)]);
 
     update({
       setEnemies,
       location,
       enemies: enemies.current,
-      player: player.current,
+      player: player,
       tiles: tiles
     });
   };
@@ -131,10 +113,11 @@ const App = ({ startTiles }) => {
     });
 
     mouse.addListener(mouse.LEFT_BUTTON, event => {
+      const [player] = getPlayer(entities.current);
       const inRangeTiles =
         selectedAbility.current.name &&
         getInRangeLocations({
-          origin: getHead(player.current),
+          origin: getHead(player),
           ability: selectedAbility.current
         });
 
@@ -145,14 +128,17 @@ const App = ({ startTiles }) => {
           areLocationsEqual(inRangeLocation, location)
         )
       ) {
-        const entities = [player.current, ...enemies.current];
+        const entities = [player, ...enemies.current];
         const targetedEntity = entities.find(entity =>
           isLocationInUnit(entity, location)
         );
 
         if (targetedEntity) {
-          if (selectedAbility.current.name.includes("Slice")) {
+          if (selectedAbility.current.effect === "dealDamage") {
             console.log("attack", targetedEntity, "at", location);
+            // move this into an ability function somehow
+            // setEnemies()
+            // targetedEntity.tiles.slice();
           }
         } else {
           console.log("no targeted enemy");
@@ -161,21 +147,22 @@ const App = ({ startTiles }) => {
     });
   }, []);
 
+  const [currentPlayer] = getPlayer(entities.current);
   return (
     <div>
       <h1>Wandering Trails</h1>
       <main>
         <Map
           tiles={tiles}
-          player={player.current}
+          player={currentPlayer}
           enemies={enemies.current}
           width={config.width}
           height={config.height}
           selectedAbility={selectedAbility.current}
         />
-        <Stats player={player.current} />
+        <Stats player={currentPlayer} />
         <Abilities
-          player={player.current}
+          player={currentPlayer}
           selectedAbility={selectedAbility.current}
           setSelectedAbility={setSelectedAbility}
         />
