@@ -15,6 +15,7 @@ import getLocationFromXY from "../location/getLocationFromXY";
 import getInRangeLocations from "../abilities/getInRangeLocations";
 import areLocationsEqual from "../location/areLocationsEqual";
 import isMoveValid from "../units/isMoveValid";
+import isLocationInUnit from "../units/isLocationInUnit";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
@@ -60,41 +61,35 @@ const App = ({ startTiles }) => {
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
   const updatePlayer = ({ direction, ability, location }) => {
-    if (ability.name.includes("Slice")) {
-      console.log("attack", location);
+    const playerHead = getHead(player.current);
+    const newLocation = {
+      col: playerHead.col + direction.col,
+      row: playerHead.row + direction.row
+    };
+
+    if (
+      !isMoveValid(
+        player.current,
+        newLocation,
+        player.current,
+        enemies.current,
+        tiles
+      )
+    ) {
+      // If move is invalid, do not move player and do not update the game state
+      return;
     }
 
-    if (ability.name === "move") {
-      const playerHead = getHead(player.current);
-      const newLocation = {
-        col: playerHead.col + direction.col,
-        row: playerHead.row + direction.row
-      };
+    const newPlayer = moveUnit(player.current, newLocation);
+    setPlayer(newPlayer);
 
-      if (
-        !isMoveValid(
-          player.current,
-          newLocation,
-          player.current,
-          enemies.current,
-          tiles
-        )
-      ) {
-        // If move is invalid, do not move player and do not update the game state
-        return;
-      }
-
-      const newPlayer = moveUnit(player.current, newLocation);
-      setPlayer(newPlayer);
-
-      update({
-        setEnemies,
-        location,
-        enemies: enemies.current,
-        player: player.current,
-        tiles: tiles
-      });
-    }
+    update({
+      setEnemies,
+      location,
+      enemies: enemies.current,
+      player: player.current,
+      tiles: tiles
+    });
   };
 
   useEffect(() => {
@@ -143,16 +138,25 @@ const App = ({ startTiles }) => {
           ability: selectedAbility.current
         });
 
+      const location = getLocationFromXY(event);
       if (
         selectedAbility.current.name &&
         inRangeTiles.find(inRangeLocation =>
-          areLocationsEqual(inRangeLocation, getLocationFromXY(event))
+          areLocationsEqual(inRangeLocation, location)
         )
       ) {
-        updatePlayer({
-          ability: selectedAbility.current,
-          location: getLocationFromXY(event)
-        });
+        const entities = [player.current, ...enemies.current];
+        const targetedEntity = entities.find(entity =>
+          isLocationInUnit(entity, location)
+        );
+
+        if (targetedEntity) {
+          if (selectedAbility.current.name.includes("Slice")) {
+            console.log("attack", targetedEntity, "at", location);
+          }
+        } else {
+          console.log("no targeted enemy");
+        }
       }
     });
   }, []);
