@@ -125,7 +125,6 @@ const App = ({ startTiles }) => {
           areLocationsEqual(inRangeLocation, getLocationFromXY(event))
         )
       ) {
-        // console.log("attack", getLocationFromXY(event));
         updatePlayer({
           ability: selectedAbility.current,
           location: getLocationFromXY(event)
