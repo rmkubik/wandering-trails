@@ -26,26 +26,6 @@ const mouse = new Mouse();
 const App = ({ startTiles }) => {
   const [tiles, setTiles] = useState(startTiles);
   const [entities, setEntities] = useRefState(defaultEntities);
-  const [enemies, setEnemies] = useRefState([
-    createUnit({
-      row: 5,
-      col: 5,
-      color: {
-        background: "red",
-        border: "crimson"
-      },
-      icon: "💀"
-    }),
-    createUnit({
-      row: 8,
-      col: 6,
-      color: {
-        background: "red",
-        border: "crimson"
-      },
-      icon: "💀"
-    })
-  ]);
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
   const updatePlayer = ({ direction, ability, location }) => {
@@ -132,16 +112,26 @@ const App = ({ startTiles }) => {
           areLocationsEqual(inRangeLocation, location)
         )
       ) {
-        const targetedEntity = entities.current.find(entity =>
+        const targetedEntityIndex = entities.current.findIndex(entity =>
           isLocationInUnit(entity, location)
         );
 
-        if (targetedEntity) {
+        if (targetedEntityIndex !== -1) {
           if (selectedAbility.current.effect === "dealDamage") {
-            console.log("attack", targetedEntity, "at", location);
+            console.log("attack", targetedEntityIndex, "at", location);
             // move this into an ability function somehow
             // setEnemies()
             // targetedEntity.tiles.slice();
+            const newEntity = entities.current[targetedEntityIndex];
+            // pop for now to deal damage
+            newEntity.tiles.pop();
+
+            // adjustArray
+            setEntities([
+              ...entities.current.slice(0, targetedEntityIndex),
+              newEntity,
+              ...entities.current.slice(targetedEntityIndex + 1)
+            ]);
           }
         } else {
           console.log("no targeted enemy");
