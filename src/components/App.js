@@ -29,10 +29,25 @@ const App = ({ startTiles }) => {
         createAbility({ name: "Slice 1" }),
         createAbility({ name: "Slice 2", range: 2 }),
         createAbility({ name: "Slice 3", range: 3 })
-      ]
+      ],
+      color: {
+        background: "cyan",
+        border: "darkturquoise"
+      },
+      icon: "🔪"
     })
   );
-  const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
+  const [enemies, setEnemies] = useRefState([
+    createUnit({
+      row: 5,
+      col: 5,
+      color: {
+        background: "red",
+        border: "crimson"
+      },
+      icon: "💀"
+    })
+  ]);
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
   const updatePlayer = ({ direction, ability, location }) => {

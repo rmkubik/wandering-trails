@@ -30,28 +30,17 @@ const Map = ({ tiles, player, enemies, width, height, selectedAbility }) => {
           let backgroundColor = "";
           let borderColor = "";
 
-          if (isLocationInUnit(player, { row: rowIndex, col: colIndex })) {
-            icon = "";
-            backgroundColor = "cyan";
-            borderColor = "DarkTurquoise";
-          }
+          const entities = [player, ...enemies];
 
-          if (isLocationHead(player, { row: rowIndex, col: colIndex })) {
-            icon = "🔪";
-            backgroundColor = "cyan";
-            borderColor = "DarkTurquoise";
-          }
+          const location = { row: rowIndex, col: colIndex };
+          const entity = entities.find(entity =>
+            isLocationInUnit(entity, location)
+          );
 
-          if (isLocationInUnit(enemies[0], { row: rowIndex, col: colIndex })) {
-            icon = "";
-            backgroundColor = "red";
-            borderColor = "crimson";
-          }
-
-          if (isLocationHead(enemies[0], { row: rowIndex, col: colIndex })) {
-            icon = "💀";
-            backgroundColor = "red";
-            borderColor = "crimson";
+          if (entity) {
+            icon = isLocationHead(entity, location) ? entity.icon : "";
+            backgroundColor = entity.color.background;
+            borderColor = entity.color.border;
           }
 
           if (
@@ -63,7 +52,6 @@ const Map = ({ tiles, player, enemies, width, height, selectedAbility }) => {
               })
             )
           ) {
-            // backgroundColor = "";
             borderColor = "Yellow";
           }
 

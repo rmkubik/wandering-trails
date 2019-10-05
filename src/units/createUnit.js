@@ -9,7 +9,12 @@ export default function createUnit({
     createAbility({ name: "Slice" }),
     createAbility({ name: "Hack" }),
     createAbility({ name: "Charge" })
-  ]
+  ],
+  color: { border = "gray", background = "lightgray" } = {
+    border: "gray",
+    background: "lightgray"
+  },
+  icon = "?"
 }) {
   return {
     tiles: [
@@ -20,6 +25,8 @@ export default function createUnit({
     ],
     maxLength,
     speed,
-    abilities
+    abilities,
+    color: { border, background },
+    icon
   };
 }
