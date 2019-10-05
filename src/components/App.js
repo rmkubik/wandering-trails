@@ -18,6 +18,7 @@ import isMoveValid from "../units/isMoveValid";
 import isLocationInUnit from "../units/isLocationInUnit";
 import defaultEntities from "../entities/default";
 import getPlayer from "../entities/getPlayer";
+import getEnemies from "../entities/getEnemies";
 
 const keyboard = new Keyboard();
 const mouse = new Mouse();
@@ -49,13 +50,14 @@ const App = ({ startTiles }) => {
 
   const updatePlayer = ({ direction, ability, location }) => {
     const [player] = getPlayer(entities.current);
+    const enemies = getEnemies(entities.current);
     const playerHead = getHead(player);
     const newLocation = {
       col: playerHead.col + direction.col,
       row: playerHead.row + direction.row
     };
 
-    if (!isMoveValid(player, newLocation, player, enemies.current, tiles)) {
+    if (!isMoveValid(player, newLocation, player, enemies, tiles)) {
       // If move is invalid, do not move player and do not update the game state
       return;
     }
@@ -66,11 +68,13 @@ const App = ({ startTiles }) => {
     setEntities([newPlayer, ...entities.current.slice(1)]);
 
     update({
-      setEnemies,
+      setEnemies: enemies => {
+        setEntities([entities.current[0], ...enemies]);
+      },
       location,
-      enemies: enemies.current,
-      player: player,
-      tiles: tiles
+      enemies,
+      player,
+      tiles
     });
   };
 
@@ -128,8 +132,7 @@ const App = ({ startTiles }) => {
           areLocationsEqual(inRangeLocation, location)
         )
       ) {
-        const entities = [player, ...enemies.current];
-        const targetedEntity = entities.find(entity =>
+        const targetedEntity = entities.current.find(entity =>
           isLocationInUnit(entity, location)
         );
 
@@ -155,7 +158,7 @@ const App = ({ startTiles }) => {
         <Map
           tiles={tiles}
           player={currentPlayer}
-          enemies={enemies.current}
+          enemies={getEnemies(entities.current)}
           width={config.width}
           height={config.height}
           selectedAbility={selectedAbility.current}
