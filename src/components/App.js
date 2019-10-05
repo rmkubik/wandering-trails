@@ -123,7 +123,9 @@ const App = ({ startTiles }) => {
             // setEnemies()
             // targetedEntity.tiles.slice();
             const newEntity = entities.current[targetedEntityIndex];
+
             // pop for now to deal damage
+            newEntity.tiles.pop();
             newEntity.tiles.pop();
 
             // adjustArray
@@ -133,6 +135,17 @@ const App = ({ startTiles }) => {
               ...entities.current.slice(targetedEntityIndex + 1)
             ]);
           }
+
+          // only update if ability had a valid target
+          update({
+            setEnemies: enemies => {
+              setEntities([entities.current[0], ...enemies]);
+            },
+            location,
+            enemies: getEnemies(entities.current),
+            player,
+            tiles
+          });
         } else {
           console.log("no targeted enemy");
         }
