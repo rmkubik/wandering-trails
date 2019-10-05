@@ -46,6 +46,15 @@ const App = ({ startTiles }) => {
         border: "crimson"
       },
       icon: "💀"
+    }),
+    createUnit({
+      row: 8,
+      col: 6,
+      color: {
+        background: "red",
+        border: "crimson"
+      },
+      icon: "💀"
     })
   ]);
   const [selectedAbility, setSelectedAbility] = useRefState({});
