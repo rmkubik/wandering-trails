@@ -35,36 +35,42 @@ const App = ({ startTiles }) => {
   const [enemies, setEnemies] = useRefState([createUnit({ row: 5, col: 5 })]);
   const [selectedAbility, setSelectedAbility] = useRefState({});
 
-  const updatePlayer = ({ direction }) => {
-    const playerHead = getHead(player.current);
-    const newLocation = {
-      col: playerHead.col + direction.col,
-      row: playerHead.row + direction.row
-    };
-
-    if (
-      !isMoveValid(
-        player.current,
-        newLocation,
-        player.current,
-        enemies.current,
-        tiles
-      )
-    ) {
-      // If move is invalid, do not move player and do not update the game state
-      return;
+  const updatePlayer = ({ direction, ability, location }) => {
+    if (ability.name.includes("Slice")) {
+      console.log("attack", location);
     }
 
-    const newPlayer = moveUnit(player.current, newLocation);
-    setPlayer(newPlayer);
+    if (ability.name === "move") {
+      const playerHead = getHead(player.current);
+      const newLocation = {
+        col: playerHead.col + direction.col,
+        row: playerHead.row + direction.row
+      };
 
-    update({
-      setEnemies,
-      location,
-      enemies: enemies.current,
-      player: player.current,
-      tiles: tiles
-    });
+      if (
+        !isMoveValid(
+          player.current,
+          newLocation,
+          player.current,
+          enemies.current,
+          tiles
+        )
+      ) {
+        // If move is invalid, do not move player and do not update the game state
+        return;
+      }
+
+      const newPlayer = moveUnit(player.current, newLocation);
+      setPlayer(newPlayer);
+
+      update({
+        setEnemies,
+        location,
+        enemies: enemies.current,
+        player: player.current,
+        tiles: tiles
+      });
+    }
   };
 
   useEffect(() => {
@@ -73,7 +79,8 @@ const App = ({ startTiles }) => {
         direction: {
           row: -1,
           col: 0
-        }
+        },
+        ability: createAbility({ name: "move" })
       });
     });
     keyboard.addListener("a", () => {
@@ -81,7 +88,8 @@ const App = ({ startTiles }) => {
         direction: {
           row: 0,
           col: -1
-        }
+        },
+        ability: createAbility({ name: "move" })
       });
     });
     keyboard.addListener("s", () => {
@@ -89,7 +97,8 @@ const App = ({ startTiles }) => {
         direction: {
           row: 1,
           col: 0
-        }
+        },
+        ability: createAbility({ name: "move" })
       });
     });
     keyboard.addListener("d", () => {
@@ -97,9 +106,11 @@ const App = ({ startTiles }) => {
         direction: {
           row: 0,
           col: 1
-        }
+        },
+        ability: createAbility({ name: "move" })
       });
     });
+
     mouse.addListener(mouse.LEFT_BUTTON, event => {
       const inRangeTiles =
         selectedAbility.current.name &&
@@ -114,7 +125,11 @@ const App = ({ startTiles }) => {
           areLocationsEqual(inRangeLocation, getLocationFromXY(event))
         )
       ) {
-        console.log("attack", getLocationFromXY(event));
+        // console.log("attack", getLocationFromXY(event));
+        updatePlayer({
+          ability: selectedAbility.current,
+          location: getLocationFromXY(event)
+        });
       }
     });
   }, []);
